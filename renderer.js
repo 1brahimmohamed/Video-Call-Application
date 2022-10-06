@@ -1,3 +1,4 @@
+
 /**
  ============================================================================
  Name        : scripts.js
@@ -6,6 +7,16 @@
  Description : Video Call logic file
  ============================================================================
  **/
+
+
+/**
+ * This file is loaded via the <script> tag in the index.html file and will
+ * be executed in the renderer process for that window. No Node.js APIs are
+ * available in this process because `nodeIntegration` is turned off and
+ * `contextIsolation` is turned on. Use the contextBridge API in `preload.js`
+ * to expose Node.js functionality from the main process.
+ */
+
 
 
 // Initiate a client with agora using RTC mode and VP8 video codec
@@ -28,7 +39,7 @@ let localTracks = {
 /**
  *  tracks to hold state for users audio and video
  *  these are used for mute or hide
-**/
+ **/
 
 let localTrackState = {
     audioTrackMuted:false,
@@ -137,10 +148,10 @@ let joinStreams = async () => {
         AgoraRTC.createCameraVideoTrack()
 
     ])
-    
+
     // Create player and add it to player list
     let player = `<div class="video-containers" id="video-wrapper-${config.uid}">
-                        <p class="user-uid"><img class="volume-icon" id="volume-${config.uid}" src="./assets/volume-on.svg" /> ${config.uid}</p>
+                        <p class="user-uid"><img alt="volume" class="volume-icon" id="volume-${config.uid}" src="./assets/volume-on.svg" /> ${config.uid}</p>
                         <div class="video-player player" id="stream-${config.uid}"></div>
                   </div>`
 
@@ -159,8 +170,8 @@ let handleUserJoined = async (user, mediaType) => {
 
 
     await client.subscribe(user, mediaType)// Subscribe ro remote users
-   
-    
+
+
     if (mediaType === 'video'){
         let player = document.getElementById(`video-wrapper-${user.uid}`)
         console.log('player:', player)
@@ -169,17 +180,17 @@ let handleUserJoined = async (user, mediaType) => {
         }
 
         player = `<div class="video-containers" id="video-wrapper-${user.uid}">
-                        <p class="user-uid"><img class="volume-icon" id="volume-${user.uid}" src="./assets/volume-on.svg" /> ${user.uid}</p>
+                        <p class="user-uid"><img alt="Volume On" class="volume-icon" id="volume-${user.uid}" src="./assets/volume-on.svg" /> ${user.uid}</p>
                         <div  class="video-player player" id="stream-${user.uid}"></div>
                       </div>`
         document.getElementById('user-streams').insertAdjacentHTML('beforeend', player);
-         user.videoTrack.play(`stream-${user.uid}`)
+        user.videoTrack.play(`stream-${user.uid}`)
     }
 
 
     if (mediaType === 'audio') {
         user.audioTrack.play();
-      }
+    }
 }
 
 
@@ -188,4 +199,5 @@ let handleUserLeft = (user) => {
     delete remoteTracks[user.uid]                           //Remove from remote users and remove users video wrapper
     document.getElementById(`video-wrapper-${user.uid}`).remove()
 }
+
 
